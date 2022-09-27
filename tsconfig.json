@@ -1,13 +1,26 @@
 {
   "extends": "@vue/tsconfig/tsconfig.web.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  "include": [
+    "env.d.ts",
+    "src/**/*",
+    "src/**/*.vue",
+    "app.d.ts",
+    "auto-imports.d.ts"
+  ],
   "compilerOptions": {
     "baseUrl": ".",
+    "types": [
+      "unplugin-vue-define-options",
+      "element-plus/global"
+    ],
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    // 如果想同时导入类型和变量 关闭这个 但是ts无法自动删除未使用的变量
+    // "preserveValueImports": false,
   },
-
   "references": [
     {
       "path": "./tsconfig.config.json"
