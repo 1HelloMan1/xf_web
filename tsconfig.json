@@ -10,7 +10,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "types": [
-      "unplugin-vue-define-options",
+      "unplugin-vue-define-options/macros-global",
       "element-plus/global"
     ],
     "paths": {

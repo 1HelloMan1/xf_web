@@ -2,7 +2,7 @@
  * @Author: syx 1492332150@qq.com
  * @Date: 2022-07-13 14:19:03
  * @LastEditors: syx 1492332150@qq.com
- * @LastEditTime: 2022-09-27 17:14:51
+ * @LastEditTime: 2022-09-27 19:34:22
  * @FilePath: /xf_web/src/App.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -23,9 +23,9 @@ function aaaa(a: ComponentInternalInstance) {
 //   console.log(123);
 
 // })
-// defineOptions({
-//   name: 'App'
-// })
+defineOptions({
+  name: 'App'
+})
 
 
 </script>
