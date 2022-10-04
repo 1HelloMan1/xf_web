@@ -15,10 +15,7 @@ import type { ComponentInternalInstance } from 'vue';
 let a = useCounterStore()
 let count = $ref(0)
 let b = useMainStore()
-function aaaa(a: ComponentInternalInstance) {
-  console.log(a);
 
-}
 // onMounted(() => {
 //   console.log(123);
 

@@ -2,7 +2,7 @@
  * @Author: syx 1492332150@qq.com
  * @Date: 2022-10-03 02:26:16
  * @LastEditors: syx 1492332150@qq.com
- * @LastEditTime: 2022-10-04 17:00:49
+ * @LastEditTime: 2022-10-04 19:14:35
  * @FilePath: /xf_web/src/views/login/index.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -21,26 +21,43 @@
             <div class="loginFrom">
                 <div>安徽省血吸虫病防治研究所</div>
                 <div>Anhui Institute of schistosomiasis control</div>
-                <el-form :model="userForm" label-width="120px">
+                <el-form ref="userFormRef" :hide-required-asterisk="true" :rules="userFormRules" :model="userForm"
+                         label-width="100px" class="userForm">
                     <el-form-item label="用户名称" prop="username">
                         <el-input v-model="userForm.username" placeholder="请输入用户名" />
                     </el-form-item>
                     <el-form-item label="用户密码" prop="password">
                         <el-input v-model="userForm.password" placeholder="请输入密码" />
                     </el-form-item>
+                    <el-form-item label="验证码" class="captchas">
+                        <el-input v-model="userForm.captchas_value" placeholder="请输入验证码">
 
+                        </el-input>
+                        <img :src="captchas.captchas_image" alt="" @click="getCaptchas">
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="login(userFormRef)">登录</el-button>
+                    </el-form-item>
                 </el-form>
+
             </div>
         </div>
-
+        <div class="foot">© 2021-2022 江苏好用健康科技有限公司</div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { Particle } from 'jparticles'
+import captchasApi from '@/api/captchas'
+import { UserStore } from '@/stores/user'
+import type { FormInstance, FormRules } from 'element-plus';
+
 defineOptions({
     name: 'login'
 })
+// vuex用户
+let userStore = UserStore()
+
 // 定义用户表单
 const userForm = reactive({
     username: '',
@@ -48,7 +65,45 @@ const userForm = reactive({
     captchas_key: '',
     captchas_value: ''
 })
-onMounted(() => {
+// 验证码
+let captchas = $ref({
+    key: '',
+    captchas_image: ''
+})
+// 表单ref对象
+const userFormRef = ref<FormInstance>()
+// 获取验证码
+function getCaptchas() {
+    captchasApi.get().then(res => {
+        captchas.key = res.key
+        captchas.captchas_image = res.captchas_image
+        userForm.captchas_key = captchas.key
+    })
+}
+const userFormRules = $ref<FormRules>({
+    username: [
+        { required: true, message: '请输入用户名', trigger: 'blur' },
+        { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+    ],
+    password: [
+        { required: true, message: '请输入密码', trigger: 'blur' },
+        { pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,16}$/g, message: '密码必须8到16位，至少1个大写字母，1个小写字母和1个数字,一个字符,不能包含特殊字符（非数字字母）', trigger: 'blur' }
+    ],
+    captchas_value: [
+        { required: true, message: '请输入验证码', trigger: 'blur' },
+        { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+    ]
+})
+// 登录
+function login(formEl: FormInstance | undefined) {
+    if (!formEl) return;
+    formEl.validate((valid: boolean) => {
+        if (valid) {
+            userStore.login(userForm)
+        }
+    })
+}
+onMounted(async () => {
     new Particle('#jparticlesBg', {
         color: '#fff',
         lineShape: 'cube',
@@ -59,6 +114,10 @@ onMounted(() => {
         parallax: true,
         resize: true,
     })
+
+    getCaptchas()
+
+
 })
 </script>
 
@@ -126,7 +185,38 @@ onMounted(() => {
                 margin: 20px 0;
                 font-size: 12px;
             }
+
+            .userForm {
+                width: 90%;
+
+                .captchas {
+                    margin-top: 40px;
+                    display: flex;
+                    width: 100%;
+
+                    :deep(.el-input) {
+                        width: 45%;
+                    }
+
+                    img {
+                        margin-left: 10px;
+                        height: 30px;
+                    }
+                }
+
+            }
         }
+    }
+
+    .foot {
+        position: fixed;
+        bottom: 20px;
+
+        justify-content: center;
+        text-align: center;
+        width: 100%;
+        font-size: 16px;
+        color: #ccc;
     }
 
 }
